@@ -40,25 +40,49 @@ if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
 }
 gl.useProgram(program);
 
-gl.uniform2f(gl.getUniformLocation(program, "resolution"), width, height);
+const locations = {
+  resolution: x(gl.getUniformLocation(program, "resolution")),
+  step: x(gl.getUniformLocation(program, "step")),
+  tex: x(gl.getUniformLocation(program, "tex")),
+  previous: x(gl.getUniformLocation(program, "previous")),
+};
+
+gl.uniform2f(locations.resolution, width, height);
 gl.viewport(0, 0, width, height);
 
-const texture = x(gl.createTexture());
-gl.activeTexture(gl.TEXTURE0);
-gl.bindTexture(gl.TEXTURE_2D, texture);
-gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-gl.uniform1i(gl.getUniformLocation(program, "tex"), 0);
+const createTexture = (
+  unit: number,
+  location: WebGLUniformLocation,
+  upload: () => void,
+) => {
+  const texture = x(gl.createTexture());
+  gl.activeTexture(gl.TEXTURE0 + unit);
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  upload();
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.uniform1i(location, unit);
+  return texture;
+};
 
-const stepLocation = gl.getUniformLocation(program, "step");
+createTexture(0, locations.tex, () => {
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+});
+
+// stays bound on unit 1, which the frame loop copies into
+createTexture(1, locations.previous, () => {
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+});
+
 let step = 0;
 const frame = () => {
-  gl.uniform1i(stepLocation, step++);
+  gl.uniform1i(locations.step, step++);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
+  // copy what was just drawn on the canvas into the "previous" texture
+  gl.copyTexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 0, 0, width, height, 0);
   requestAnimationFrame(frame);
 };
 frame();
