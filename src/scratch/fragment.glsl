@@ -2,8 +2,9 @@
 precision highp float;
 uniform vec2 resolution;
 uniform int step;
+uniform sampler2D tex;
 out vec4 color;
 void main() {
   vec2 uv = gl_FragCoord.xy / resolution;
-  color = vec4(uv, 0.5 + 0.5 * sin(float(step) * 0.05), 1);
+  color = texture(tex, uv);
 }
