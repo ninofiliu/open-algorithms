@@ -38,4 +38,12 @@ gl.useProgram(program);
 
 gl.uniform2f(gl.getUniformLocation(program, "resolution"), width, height);
 gl.viewport(0, 0, width, height);
-gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+const stepLocation = gl.getUniformLocation(program, "step");
+let step = 0;
+const frame = () => {
+  gl.uniform1i(stepLocation, step++);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  requestAnimationFrame(frame);
+};
+frame();
