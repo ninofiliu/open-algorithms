@@ -3,28 +3,39 @@ precision highp float;
 
 uniform vec2 resolution;
 uniform int step;
-uniform sampler2D tex;
+uniform sampler2D img1;
+uniform sampler2D img2;
 uniform sampler2D previous;
 out vec4 color;
+
+float quant(float value, int nb) {
+  return round(value*float(nb))/float(nb);
+}
+vec2 quant(vec2 value, int nb) {
+  return vec2(quant(value.x, nb), quant(value.y, nb));
+}
 
 void main() {
   vec2 uv = gl_FragCoord.xy / resolution;
 
   if (step==0) {
-    color = texture(tex, uv);
+    color = texture(img1, uv);
     return;
   }
 
-  vec2 shift = texture(previous, uv).xy-0.5;
-  shift*=1.2;
-  shift.x = round(shift.x);
-  shift.y = round(shift.y);
+  if (step > 100) {
+    color = texture(previous, uv);
+    return;
+  }
 
-  color = texture(previous, uv + 0.02*shift);
+  vec2 shift = texture(img2,uv).xy-0.5;
+  shift = quant(shift*0.8, 2);
 
+  color = texture(previous, uv + 0.1*shift);
 
-  // keeps `step` and `previous` active (not optimised out) until they are really used
+  // keeps `step`, `img2` and `previous` active (not optimised out) until they are really used
   if (step < 0) {
     color = texture(previous, uv);
+    color = texture(img2, uv);
   }
 }

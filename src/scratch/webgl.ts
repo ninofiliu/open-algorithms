@@ -8,9 +8,12 @@ document.body.style.overflow = "hidden";
 const width = innerWidth;
 const height = innerHeight;
 
-const img = document.createElement("img");
-img.src = "/lib/13020f767a6b963ac8f65e0f02cfdca4.jpg";
-await img.decode();
+const img1 = document.createElement("img");
+img1.src = "/lib/369913234ae05c8fa2b93e3941caec25.jpg";
+await img1.decode();
+const img2 = document.createElement("img");
+img2.src = "/lib/369913234ae05c8fa2b93e3941caec25.jpg";
+await img2.decode();
 
 const canvas = document.createElement("canvas");
 canvas.width = width;
@@ -43,7 +46,8 @@ gl.useProgram(program);
 const locations = {
   resolution: x(gl.getUniformLocation(program, "resolution")),
   step: x(gl.getUniformLocation(program, "step")),
-  tex: x(gl.getUniformLocation(program, "tex")),
+  img1: x(gl.getUniformLocation(program, "img1")),
+  img2: x(gl.getUniformLocation(program, "img2")),
   previous: x(gl.getUniformLocation(program, "previous")),
 };
 
@@ -67,12 +71,8 @@ const createTexture = (
   return texture;
 };
 
-createTexture(0, locations.tex, () => {
-  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-});
-
-createTexture(1, locations.previous, () => {
+const previousUnit = 0;
+createTexture(previousUnit, locations.previous, () => {
   gl.texImage2D(
     gl.TEXTURE_2D,
     0,
@@ -86,11 +86,23 @@ createTexture(1, locations.previous, () => {
   );
 });
 
+createTexture(1, locations.img1, () => {
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img1);
+});
+
+createTexture(2, locations.img2, () => {
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img2);
+});
+
 let step = 0;
 const frame = () => {
   gl.uniform1i(locations.step, step++);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
   // copy what was just drawn on the canvas into the "previous" texture
+  // copyTexImage2D targets the texture bound on the active unit, so select "previous" explicitly
+  gl.activeTexture(gl.TEXTURE0 + previousUnit);
   gl.copyTexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 0, 0, width, height, 0);
   requestAnimationFrame(frame);
 };
