@@ -16,8 +16,11 @@ void main() {
   }
 
   vec2 shift = texture(previous, uv).xy-0.5;
-  color = texture(previous, uv + 0.001*shift);
-  // color = texture(previous, uv);
+  shift*=1.2;
+  shift.x = round(shift.x);
+  shift.y = round(shift.y);
+
+  color = texture(previous, uv + 0.02*shift);
 
 
   // keeps `step` and `previous` active (not optimised out) until they are really used

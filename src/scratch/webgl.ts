@@ -9,7 +9,7 @@ const width = innerWidth;
 const height = innerHeight;
 
 const img = document.createElement("img");
-img.src = "/lib/fffe08c8af25726a001f73ce900596a9.jpg";
+img.src = "/lib/13020f767a6b963ac8f65e0f02cfdca4.jpg";
 await img.decode();
 
 const canvas = document.createElement("canvas");
@@ -72,9 +72,18 @@ createTexture(0, locations.tex, () => {
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
 });
 
-// stays bound on unit 1, which the frame loop copies into
 createTexture(1, locations.previous, () => {
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  gl.texImage2D(
+    gl.TEXTURE_2D,
+    0,
+    gl.RGBA,
+    width,
+    height,
+    0,
+    gl.RGBA,
+    gl.UNSIGNED_BYTE,
+    null,
+  );
 });
 
 let step = 0;
