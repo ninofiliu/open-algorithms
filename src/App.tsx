@@ -1,6 +1,6 @@
 import { Link, Route, Routes } from "react-router";
 import "./main.css";
-import { Scratch } from "./pages/scratch/scratch";
+import { Pexcil } from "./pages/pexcil/pexcil";
 
 export const App = () => {
   return (
@@ -33,12 +33,15 @@ export const App = () => {
                 <a href="https://github.com/ninofiliu/webart">Github</a>.
               </p>
               <p>
-                <Link to="/scratch">Scratch</Link>: TODO
+                <Link to="/pexcil">Pexcil</Link>: initially designed as an
+                algorithm to realistically imitate the way I used my pencil to
+                draw, was eventually deemed much more interesting when using
+                unrealistic parameters.
               </p>
             </div>
           }
         />
-        <Route path="/scratch" element={<Scratch />} />
+        <Route path="/pexcil" element={<Pexcil />} />
       </Routes>
     </div>
   );

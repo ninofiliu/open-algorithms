@@ -4,7 +4,7 @@ import { createSpiral } from "./lib";
 import { FileInput } from "../../components/FileInput";
 import { NumberInput } from "../../components/NumberInput";
 
-export const Scratch = () => {
+export const Pexcil = () => {
   const [file, setFile] = useState(null as File | null);
   const [divider, setDivider] = useState(7);
   const [multiplier, setMultiplier] = useState(3);
