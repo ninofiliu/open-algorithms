@@ -49,3 +49,22 @@ input {
 .FileInput input {
   display: none;
 }
+.NumberInput {
+  font: inherit;
+  padding: 1rem;
+  display: flex;
+  gap: 1ch;
+  align-items: center;
+}
+.NumberInput input {
+  flex-grow: 1;
+}
+input {
+  font: inherit;
+  border: none;
+  background: none;
+  outline: none;
+}
+input:focus {
+  border-bottom: 1px solid var(--accent);
+}
