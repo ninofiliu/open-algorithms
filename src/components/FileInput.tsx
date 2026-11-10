@@ -1,8 +1,10 @@
 import { useRef, useState } from "react";
 
 export const FileInput = ({
+  label = "Image",
   onChange,
 }: {
+  label?: string;
   onChange: (file: File) => unknown;
 }) => {
   const [fileName, setFileName] = useState("");
@@ -52,7 +54,7 @@ export const FileInput = ({
           setFileName(file.name ?? "");
         }}
       />
-      <span>Image: </span>
+      <span>{label}: </span>
       {!fileName ? (
         <span>drop or click to select</span>
       ) : (

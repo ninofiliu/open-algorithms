@@ -1,6 +1,7 @@
 import { Link, Route, Routes } from "react-router";
 import "./main.css";
 import { Pexcil } from "./pages/pexcil/pexcil";
+import { Diffractia } from "./pages/diffractia/diffractia";
 
 export const App = () => {
   return (
@@ -38,10 +39,16 @@ export const App = () => {
                 draw, was eventually deemed much more interesting when using
                 unrealistic parameters.
               </p>
+              <p>
+                <Link to="/diffractia">Diffractia</Link>: a WebGL algorithm that
+                progressively shifts the pixels of a source image using a
+                diffraction image.
+              </p>
             </div>
           }
         />
         <Route path="/pexcil" element={<Pexcil />} />
+        <Route path="/diffractia" element={<Diffractia />} />
       </Routes>
     </div>
   );
