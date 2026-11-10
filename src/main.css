@@ -1,0 +1,36 @@
+/*
+cool fonts:
+Instrument
+Silkscreen
+VT323
+Jacquard 12
+*/
+:root {
+  color-scheme: dark;
+  font-family: "Jacquard 12", system-ui;
+  font-weight: 400;
+  font-style: normal;
+  --white: #ccc;
+  --color: #880;
+  --accent: yellow;
+  --dark: #111;
+}
+body {
+  color: var(--white);
+  background-color: var(--dark);
+  margin: 0;
+  font-size: 1.8rem;
+}
+button {
+  font: inherit;
+}
+button:hover {
+  color: var(--accent);
+  cursor: pointer;
+}
+a {
+  color: var(--color);
+}
+a:hover {
+  color: var(--accent);
+}
