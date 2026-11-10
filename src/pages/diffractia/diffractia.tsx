@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { x } from "../../shared";
 import { FileInput } from "../../components/FileInput";
-import fragmentSource from "../../scratch/fragment.glsl?raw";
-import vertexSource from "../../scratch/vertex.glsl?raw";
+import fragmentSource from "./fragment.glsl?raw";
+import vertexSource from "./vertex.glsl?raw";
 
 const compile = (gl: WebGL2RenderingContext, type: number, source: string) => {
   const shader = x(gl.createShader(type));
@@ -46,8 +46,6 @@ const createGl = (canvas: HTMLCanvasElement) => {
   return { gl, locations, dispose };
 };
 
-type Gl = ReturnType<typeof createGl>;
-
 const loadImage = async (file: File) => {
   const img = document.createElement("img");
   const url = URL.createObjectURL(file);
@@ -64,7 +62,7 @@ export const Diffractia = () => {
   const [source, setSource] = useState(null as File | null);
   const [diffraction, setDiffraction] = useState(null as File | null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const glRef = useRef<Gl | null>(null);
+  const glRef = useRef<ReturnType<typeof createGl> | null>(null);
 
   // the webgl context and program are built once
   useEffect(() => {
