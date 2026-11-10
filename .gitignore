@@ -26,3 +26,5 @@ dist-ssr
 /out
 /deploy.ps1
 /public/pics
+# Local Netlify folder
+.netlify
