@@ -11,7 +11,6 @@ Jacquard 12
   font-weight: 400;
   font-style: normal;
   --white: #ccc;
-  --color: #880;
   --accent: yellow;
   --dark: #111;
 }
@@ -29,8 +28,24 @@ button:hover {
   cursor: pointer;
 }
 a {
-  color: var(--color);
+  color: var(--accent);
 }
 a:hover {
   color: var(--accent);
+}
+input {
+  font: inherit;
+}
+
+.FileInput {
+  padding: 1rem;
+  cursor: pointer;
+}
+.FileInput:hover,
+.FileInput.dragOver {
+  background-color: var(--accent);
+  color: var(--dark);
+}
+.FileInput input {
+  display: none;
 }
