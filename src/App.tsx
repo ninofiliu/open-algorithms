@@ -2,6 +2,7 @@ import { Link, Route, Routes } from "react-router";
 import "./main.css";
 import { Pexcil } from "./pages/pexcil/pexcil";
 import { Diffractia } from "./pages/diffractia/diffractia";
+import { MotionCam } from "./pages/motioncam/motioncam";
 
 export const App = () => {
   return (
@@ -44,11 +45,17 @@ export const App = () => {
                 progressively shifts the pixels of a source image using a
                 diffraction image.
               </p>
+              <p>
+                <Link to="/motioncam">MotionCam</Link>: a WebGL algorithm that
+                detects motion from a live camera feed by diffing consecutive
+                frames.
+              </p>
             </div>
           }
         />
         <Route path="/pexcil" element={<Pexcil />} />
         <Route path="/diffractia" element={<Diffractia />} />
+        <Route path="/motioncam" element={<MotionCam />} />
       </Routes>
     </div>
   );
