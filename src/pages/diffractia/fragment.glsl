@@ -6,12 +6,16 @@ uniform int step;
 uniform sampler2D img1;
 uniform sampler2D img2;
 uniform sampler2D previous;
+uniform int maxStep;
+uniform float force;
+uniform float compression;
+uniform float dist;
 out vec4 color;
 
-float quant(float value, int nb) {
-  return round(value*float(nb))/float(nb);
+float quant(float value, float nb) {
+  return round(value*nb)/nb;
 }
-vec2 quant(vec2 value, int nb) {
+vec2 quant(vec2 value, float nb) {
   return vec2(quant(value.x, nb), quant(value.y, nb));
 }
 
@@ -23,15 +27,15 @@ void main() {
     return;
   }
 
-  if (step > 5) {
+  if (step > maxStep) {
     color = texture(previous, uv);
     return;
   }
 
-  vec2 shift = texture(previous, uv).xy-0.5;
-  shift = quant(shift*0.8, 2);
+  vec2 shift = texture(img2, uv).xy-0.5;
+  shift = quant(shift*force, compression);
 
-  color = texture(previous, uv + 0.05*shift);
+  color = texture(previous, uv + dist*shift);
 
   // keeps `step`, `img2` and `previous` active (not optimised out) until they are really used
   if (step < 0) {

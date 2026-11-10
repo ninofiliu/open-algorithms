@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { x } from "../../shared";
 import { FileInput } from "../../components/FileInput";
+import { NumberInput } from "../../components/NumberInput";
 import fragmentSource from "./fragment.glsl?raw";
 import vertexSource from "./vertex.glsl?raw";
 
@@ -35,6 +36,10 @@ const createGl = (canvas: HTMLCanvasElement) => {
     img1: x(gl.getUniformLocation(program, "img1")),
     img2: x(gl.getUniformLocation(program, "img2")),
     previous: x(gl.getUniformLocation(program, "previous")),
+    maxStep: x(gl.getUniformLocation(program, "maxStep")),
+    force: x(gl.getUniformLocation(program, "force")),
+    compression: x(gl.getUniformLocation(program, "compression")),
+    dist: x(gl.getUniformLocation(program, "dist")),
   };
 
   const dispose = () => {
@@ -61,6 +66,10 @@ const loadImage = async (file: File) => {
 export const Diffractia = () => {
   const [source, setSource] = useState(null as File | null);
   const [diffraction, setDiffraction] = useState(null as File | null);
+  const [maxStep, setMaxStep] = useState(5);
+  const [force, setForce] = useState(0.8);
+  const [compression, setCompression] = useState(2);
+  const [dist, setDist] = useState(0.05);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const glRef = useRef<ReturnType<typeof createGl> | null>(null);
 
@@ -100,6 +109,10 @@ export const Diffractia = () => {
       canvas.width = width;
       canvas.height = height;
       gl.uniform2f(locations.resolution, width, height);
+      gl.uniform1i(locations.maxStep, Math.round(maxStep));
+      gl.uniform1f(locations.force, force);
+      gl.uniform1f(locations.compression, compression);
+      gl.uniform1f(locations.dist, dist);
       gl.viewport(0, 0, width, height);
 
       const createTexture = (
@@ -176,12 +189,20 @@ export const Diffractia = () => {
       cancelAnimationFrame(raf);
       for (const texture of textures) gl.deleteTexture(texture);
     };
-  }, [source, diffraction]);
+  }, [source, diffraction, maxStep, force, compression, dist]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <FileInput label="Source image" onChange={setSource} />
       <FileInput label="Diffraction image" onChange={setDiffraction} />
+      <NumberInput label="Max step" value={maxStep} onChange={setMaxStep} />
+      <NumberInput label="Force" value={force} onChange={setForce} />
+      <NumberInput
+        label="Compression"
+        value={compression}
+        onChange={setCompression}
+      />
+      <NumberInput label="Distance" value={dist} onChange={setDist} />
       <canvas
         ref={canvasRef}
         style={{ maxWidth: "100%", objectFit: "contain" }}
