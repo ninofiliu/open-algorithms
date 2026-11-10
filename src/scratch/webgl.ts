@@ -1,23 +1,32 @@
-import { x } from "../shared";
+import { picsSrc, randPick, x } from "../shared";
 import fragmentSource from "./fragment.glsl?raw";
 import vertexSource from "./vertex.glsl?raw";
 
 document.body.style.margin = "0";
 document.body.style.overflow = "hidden";
 
-const width = innerWidth;
-const height = innerHeight;
+// const width = innerWidth;
+// const height = innerHeight;
 
 const img1 = document.createElement("img");
-img1.src = "/lib/369913234ae05c8fa2b93e3941caec25.jpg";
+img1.src = randPick(picsSrc);
+console.log(img1.src);
 await img1.decode();
+
+const width = img1.width;
+const height = img1.height;
+
 const img2 = document.createElement("img");
-img2.src = "/lib/369913234ae05c8fa2b93e3941caec25.jpg";
+img2.src = randPick(picsSrc);
+console.log(img2.src);
 await img2.decode();
 
 const canvas = document.createElement("canvas");
 canvas.width = width;
 canvas.height = height;
+canvas.style.width = "100vw";
+canvas.style.height = "100vh";
+canvas.style.objectFit = "contain";
 document.body.append(canvas);
 const gl = x(canvas.getContext("webgl2"));
 

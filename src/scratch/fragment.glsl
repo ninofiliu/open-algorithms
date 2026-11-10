@@ -23,15 +23,15 @@ void main() {
     return;
   }
 
-  if (step > 100) {
+  if (step > 5) {
     color = texture(previous, uv);
     return;
   }
 
-  vec2 shift = texture(img2,uv).xy-0.5;
+  vec2 shift = texture(previous, uv).xy-0.5;
   shift = quant(shift*0.8, 2);
 
-  color = texture(previous, uv + 0.1*shift);
+  color = texture(previous, uv + 0.05*shift);
 
   // keeps `step`, `img2` and `previous` active (not optimised out) until they are really used
   if (step < 0) {
