@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { x } from "../../shared";
+import { ToggleInput } from "../../components/ToggleInput";
 import fragmentSource from "./fragment.glsl?raw";
 import vertexSource from "./vertex.glsl?raw";
 
@@ -43,11 +44,11 @@ const createGl = (canvas: HTMLCanvasElement) => {
   return { gl, locations, dispose };
 };
 
-const openCamera = async () => {
+const openCamera = async (frontFacing: boolean) => {
+  const facingMode = frontFacing ? "user" : "environment";
   try {
-    // prefer the environment (rear) camera when available
     return await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { ideal: "environment" } },
+      video: { facingMode: { ideal: facingMode } },
       audio: false,
     });
   } catch {
@@ -60,6 +61,7 @@ const openCamera = async () => {
 
 export const MotionCam = () => {
   const [error, setError] = useState(null as string | null);
+  const [frontFacing, setFrontFacing] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const glRef = useRef<ReturnType<typeof createGl> | null>(null);
 
@@ -75,8 +77,8 @@ export const MotionCam = () => {
     };
   }, []);
 
-  // the camera stream starts as soon as the page loads, and the algorithm
-  // restarts if the webgl context ever gets rebuilt
+  // the camera stream starts as soon as the page loads, and restarts
+  // whenever the webgl context is rebuilt or the facing camera is toggled
   useEffect(() => {
     const canvas = canvasRef.current;
     const created = glRef.current;
@@ -93,7 +95,7 @@ export const MotionCam = () => {
 
     (async () => {
       try {
-        stream = await openCamera();
+        stream = await openCamera(frontFacing);
       } catch (err) {
         if (!cancelled) {
           setError(err instanceof Error ? err.message : "camera access error");
@@ -180,10 +182,17 @@ export const MotionCam = () => {
       if (stream) for (const track of stream.getTracks()) track.stop();
       for (const texture of textures) gl.deleteTexture(texture);
     };
-  }, []);
+  }, [frontFacing]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
+      <ToggleInput
+        label="Camera"
+        value={frontFacing}
+        onChange={setFrontFacing}
+        offLabel="back"
+        onLabel="front"
+      />
       {error && <p>Could not access the camera: {error}</p>}
       <canvas
         ref={canvasRef}
