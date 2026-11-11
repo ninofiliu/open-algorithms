@@ -32,7 +32,10 @@ export const App = () => {
               </p>
               <p>
                 Everything is open sourced on{" "}
-                <a href="https://github.com/ninofiliu/webart">Github</a>.
+                <a href="https://github.com/ninofiliu/open-algorithms">
+                  Github
+                </a>
+                .
               </p>
               <p>
                 <Link to="/pexcil">Pexcil</Link>: initially designed as an
